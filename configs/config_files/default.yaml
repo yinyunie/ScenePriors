@@ -1,0 +1,134 @@
+################################################################################
+# training/testing parameters
+################################################################################
+method: Ours
+mode: train
+exp_name: transformer_gen
+start_deform: False
+resume: False
+finetune: False
+weight: []
+seed: 1
+root_dir: '.'
+device:
+  use_gpu: True
+  num_workers: 0
+distributed:
+  num_gpus: 1
+  OMP_NUM_THREADS: 12
+data:
+  dataset: 3D-Front
+  split_dir: splits
+  split_type: bed # bedroom
+  n_modes: 100
+  z_dim: 512
+  n_views: 10
+  downsample_ratio: 4
+  backbone_latent_len: 1024
+  matcher:
+    cost_class: 1
+    cost_bbox: 0.1
+    cost_giou: 1
+model:
+  latent_input:
+    method: VAD
+    arch:
+      latent_encode:
+        module: Latent_Embedding
+        loss: Null
+  generator:
+    method: Generator
+    arch:
+      backbone:
+        module: AutoregressiveTransformer
+        loss: Null
+      box_gen:
+        module: BoxDecoder
+        loss: Null
+      shape_gen:
+        module: ShapeDecoder
+        loss: Null
+      render:
+        module: Proj2Img
+        loss: MultiViewRenderLoss
+        weight: 1
+optimizer: # default optimizer
+  type: generator
+  method: Adam
+  lr: 0.0001
+  betas: [ 0.9, 0.999 ]
+  eps: 1e-08
+  weight_decay: 0
+  clip_norm: -1
+scheduler:
+  latent_input:
+    milestones: [400]
+    gamma: 0.1
+  generator:
+    milestones: [400]
+    gamma: 0.1
+bnscheduler:
+  bn_decay_step: 20
+  bn_decay_rate: 0.5
+  bn_momentum_init: 0.5
+  bn_momentum_max: 0.001
+train:
+  batch_size: 2
+  epochs: 400
+  epochs_latent: 50
+  phase: 'full'
+  freeze: []
+  clip_norm: False
+test:
+  finetune_split: test
+  n_views_for_finetune: -1
+  batch_size: 1
+  mask_flag: 200
+  epochs: 500
+  phase: 'full'
+interpolation:
+  batch_size: 1
+  room_type: bed
+  sample_1: random
+  sample_2: random
+  intervals: 300
+  phase: 'full'
+generation:
+  n_generations: 2000
+  room_type: bed
+  phase: 'full'
+  dump_results: True
+  dump_dir: ${log.log_dir}/vis
+demo:
+  input_dir: ${root_dir}/demo/${data.dataset}/input
+  output_dir: ${root_dir}/demo/${data.dataset}/output_new
+  epochs: 1000
+  batch_size: 1
+  mask_flag: 200
+  batch_id: 1
+  batch_num: 6
+  phase: 'full'
+eval:
+  use_nms: False
+  use_3d_nms: True
+  cls_nms: False
+  nms_iou: 0.15
+  use_old_type_nms: False
+  per_class_proposal: True
+  ap_iou_thresholds: [0.25, 0.5]
+  conf_thresh: 0.05
+log:
+  log_dir: ${root_dir}/outputs/${data.dataset}/${mode}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  if_wandb: False
+  print_step: 5
+  vis_step: 100
+  save_weight_step: 50
+hydra:
+  run:
+    dir: ${log.log_dir}
+# slurm params
+defaults:
+  #- hydra/launcher: submitit_slurm
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+  - _self_
