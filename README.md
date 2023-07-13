@@ -58,6 +58,30 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
    datasets/3D-Front/3D-FRONT_renderings_improved_mat
    ```
    *Note: you can comment out `bproc.renderer.enable_depth_output(activate_antialiasing=False)` in `render_dataset_improved_mat.py` since we do not need depth information.*
-3. 
 
+3. Preprocess 3D-Front data by
+   ```commandline
+   python utils/threed_front/1_process_viewdata.py --room_type ROOM_TYPE --n_processes NUM_THREADS
+   python utils/threed_front/2_get_stats.py --room_type ROOM_TYPE
+   ```
+   * The processed data for training are saved in `datasets/3D-Front/3D-FRONT_samples`.
+   * We also parsed and extracted the 3D-Front data for visualization into `datasets/3D-Front/3D-FRONT_scenes`.
+   * `ROOM_TYPE` can be `'bed'`(bedroom) or `'living'`(living room).
+   * You can set `NUM_THREADS` to your CPU core number for parallel processing.
+
+4. Visualize processed data for verification by (optional)
+   ```commandline
+   python utils/threed_front/vis/vis_gt_sample.py --scene_json SCENE_JSON_ID --room_id ROOM_ID --n_samples N_VIEWS 
+   ```
+   * `SCENE_JSON_ID` is the ID of a scene, e,g, `6a0e73bc-d0c4-4a38-bfb6-e083ce05ebe9`.
+   * `ROOM_ID` is the room ID in this scene, e.g., `MasterBedroom-2679`.
+   * `N_VIEWS` is the number views to visualize., e.g. `12`.
+   
+   If everything goes smooth, there will pop five visualization windows as follows.
+
+|           <div style="width:200px">RGB</div>            |                        <div style="width:200px">Semantics</div>                        |                        <div style="width:200px">Instances</div>                         |                            <div style="width:200px">3D Boxes</div>                             |           <div style="width:200px">CAD Models</div>            |
+|:-------------------------------------------------------:|:--------------------------------------------------------------------------------:|:--------------------------------------------------------:|:---------------------------------------------------------------:|:--------------------------------------------------------------:|
+| <img src="resources/visualization/rgb.jpg" width="300"> |             <img src="resources/visualization/sem.jpg" width="300">              | <img src="resources/visualization/inst.jpg" width="300"> | <img src="resources/visualization/3dboxesproj.jpg" width="300"> | <img src="resources/visualization/CAD_models.png" width="300"> |
+
+*Note: X server is required for 3D visualization.*
 

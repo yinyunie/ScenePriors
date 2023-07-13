@@ -18,7 +18,6 @@ class Threed_Front_Config(Data_Process_Config):
         self.dump_dir_to_samples = self.root_path.joinpath('3D-FRONT_samples')
         self.dump_dir_to_room_samples = self.root_path.joinpath('3D-FRONT_room_samples')
         self.threed_front_rendering_dir = self.root_path.joinpath('3D-FRONT_renderings_improved_mat')
-        self.cls_importance_path = self.root_path.joinpath('cls_importance_ratio.json')
         self.unique_inst_mark_path = self.root_path.joinpath('unique_inst_mark.json')
 
         self.room_types = ['bed', 'library', 'living', 'dining']
@@ -28,19 +27,10 @@ class Threed_Front_Config(Data_Process_Config):
             self.split_root.mkdir()
         self.split_path_dir = {room_type: self.split_root.joinpath('%s_threed_front_splits.json' % (room_type)) for room_type in self.room_types}
         self.split_path_dir['all'] = self.split_root.joinpath('all_samples.json')
-
-        self.split_ratio = {'per_room_type':
-                                {'train': 0.9,
-                                 'test': 0.1},
-                            'all':
-                                {'train': 0.9,
-                                 'test': 0.1}}
         self.cam_K = np.load(self.threed_front_rendering_dir.joinpath('cam_K.npy'))
         self.image_size = self.cam_K[:2, 2] * 2 + 1
         self.blender_label_mapping_path = self.root_path.joinpath('blender_label_mapping.csv')
         self._raw_threed_front_mapping = read_mapping_csv(self.blender_label_mapping_path, from_label='id', to_label='name')
-        self.cam_sample_info = {'height': [1.4, 1.8], 'pitch': [math.pi/2 - 1.338, math.pi/2 - 1.2217]}
-        self.cam_loc_padding = 1 # pad 1 meter away from any objects
         self._label_names = []
         self._label_mapping = []
         self._generic_mapping = []
