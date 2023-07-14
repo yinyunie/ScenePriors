@@ -45,7 +45,7 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
 ---
 
 ## Data Processing
-### 3D-Front data processing
+### 3D-Front data processing (for scene genration)
 1. Apply \& Download the [3D-Front](https://tianchi.aliyun.com/specials/promotion/alibaba-3d-scene-dataset) dataset and link them to the local directory as follows:
    ```
    datasets/3D-Front/3D-FRONT
@@ -79,9 +79,55 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
    
    If everything goes smooth, there will pop five visualization windows as follows.
 
-|           <div style="width:200px">RGB</div>            |                        <div style="width:200px">Semantics</div>                        |                        <div style="width:200px">Instances</div>                         |                            <div style="width:200px">3D Boxes</div>                             |           <div style="width:200px">CAD Models</div>            |
-|:-------------------------------------------------------:|:--------------------------------------------------------------------------------:|:--------------------------------------------------------:|:---------------------------------------------------------------:|:--------------------------------------------------------------:|
-| <img src="resources/visualization/rgb.jpg" width="300"> |             <img src="resources/visualization/sem.jpg" width="300">              | <img src="resources/visualization/inst.jpg" width="300"> | <img src="resources/visualization/3dboxesproj.jpg" width="300"> | <img src="resources/visualization/CAD_models.png" width="300"> |
+|               <div style="width:200px">RGB</div>                |                     <div style="width:200px">Semantics</div>                      |             <div style="width:200px">Instances</div>             |            <div style="width:200px">3D Box Projections</div>             |          <div style="width:200px">CAD Models (view #1)</div>           |
+|:---------------------------------------------------------------:|:---------------------------------------------------------------------------------:|:----------------------------------------------------------------:|:------------------------------------------------------------------------:|:----------------------------------------------------------------------:|
+| <img src="resources/visualization/front3d/rgb.jpg" width="300"> |          <img src="resources/visualization/front3d/sem.jpg" width="300">          | <img src="resources/visualization/front3d/inst.jpg" width="300"> | <img src="resources/visualization/front3d/3dboxesproj.jpg" width="300">  | <img src="resources/visualization/front3d/CAD_models.png" width="300"> |
 
 *Note: X server is required for 3D visualization.*
 
+---
+
+### ScanNet data processing (for single-view reconstruction)
+1. Apply and download [ScanNet](http://www.scan-net.org/) into `datasets/ScanNet/scans`. Since we need 2D data, the `*.sens` should also be downloaded for each scene.
+2. Extract `*.sens` files to obtain RGB/semantics/instance/camera pose frame data by
+   ```commandline
+   python utils/scannet/1_unzip_sens.py
+   ```
+   Then the folder structure in each scene looks like:
+   ```
+   ./scene*
+   |--color (folder)
+   |--instance-filt (folder)
+   |--intrinsic (folder)
+   |--label-filt (folder)
+   |--pose (folder)
+   |--scene*.aggregation.json
+   |--scene*.sens
+   |--scene*.txt
+   |--scene*_2d-instance.zip
+   ...
+   |--scene*_vh_clean_2.ply
+   ```
+3. Process ScanNet data by
+   ```commandline
+   python utils/scannet/2_process_viewdata.py
+   ```
+   The processed data will be saved in `datasets/ScanNet/ScanNet_samples`.
+
+4. Visualize the processed data by(optional)
+   ```commandline
+   python utils/scannet/vis/vis_gt.py --scene_id SCENE_ID --n_samples N_SAMPLES
+   ```
+   * SCENE_ID is the scene ID in scannet, e.g., `scene0000_00`
+   * N_SAMPLES is the number of views to visualize, e.g., `6` 
+   
+   If everything goes smooth, it will pop out five visualization windows like
+
+|               <div style="width:200px">RGB</div>                |            <div style="width:200px">Semantics</div>             |             <div style="width:200px">Instances</div>             |            <div style="width:200px">3D Box Projections</div>            |          <div style="width:200px">3D Boxes (view #3)</div>          |
+|:---------------------------------------------------------------:|:---------------------------------------------------------------:|:----------------------------------------------------------------:|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+| <img src="resources/visualization/scannet/rgb.jpg" width="300"> | <img src="resources/visualization/scannet/sem.jpg" width="300"> | <img src="resources/visualization/scannet/inst.jpg" width="300"> | <img src="resources/visualization/scannet/3dboxesproj.jpg" width="300"> | <img src="resources/visualization/scannet/3dboxes.png" width="300"> |
+
+
+
+   
+   

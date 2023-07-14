@@ -1,5 +1,7 @@
 #  Copyright (c) 8.2022. Yinyu Nie
 #  License: MIT
+import sys
+sys.path.append('.')
 import h5py
 import argparse
 
@@ -12,7 +14,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Visualize a ScanNet gt sample.")
     parser.add_argument("--scene_id", type=str, default='scene0000_00',
                         help="give the scene json name to visualize.")
-    parser.add_argument("--n_samples", type=int, default=20,
+    parser.add_argument("--n_samples", type=int, default=6,
                         help="Max number of images to visualize.")
     return parser.parse_args()
 
@@ -62,7 +64,7 @@ if __name__ == '__main__':
 
     viser_2D = VIS_ScanNet_2D(color_maps=room_imgs, inst_info=instance_attrs, cls_maps=class_maps,
                               class_names=dataset_config.label_names, projected_inst_boxes=projected_inst_boxes)
-    # viser_2D.draw_colors()
+    viser_2D.draw_colors()
     viser_2D.draw_cls_maps()
     viser_2D.draw_inst_maps(type=('mask'))
     viser_2D.draw_box2d_from_3d()
@@ -72,5 +74,5 @@ if __name__ == '__main__':
         cam_Ts=cam_Ts,
         instance_attrs=instance_attrs,
         class_names=dataset_config.label_names)
-    scene.update_view(view_id=1)
-    scene.visualize(type=['bbox', 'mesh', 'cam_pose'], image_size=room_imgs[0].shape[:2])
+    scene.update_view(view_id=2)
+    scene.visualize(type=['bbox', 'mesh'], image_size=room_imgs[0].shape[:2])

@@ -30,10 +30,10 @@ if __name__ == '__main__':
 
     viser_2D = VIS_ScanNet_2D(color_maps=colors, inst_info=instance_attrs, cls_maps=class_maps,
                               class_names=dataset_config.label_names, projected_inst_boxes=projected_inst_boxes)
-    # viser_2D.draw_colors()
-    # viser_2D.draw_cls_maps()
-    # viser_2D.draw_inst_maps(type=('mask'))
-    # viser_2D.draw_box2d_from_3d()
+    viser_2D.draw_colors()
+    viser_2D.draw_cls_maps()
+    viser_2D.draw_inst_maps(type=('mask'))
+    viser_2D.draw_box2d_from_3d()
 
     scene = VIS_ScanNet(
         cam_Ks=cam_Ks,

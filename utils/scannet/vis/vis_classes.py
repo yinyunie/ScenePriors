@@ -169,7 +169,7 @@ def image_grid(imgs: Union[List[np.ndarray], np.ndarray]):
         cols = 1
         rows = 1
     else:
-        cols = np.ceil(np.sqrt(h * golden * len(imgs) / w)).astype(np.uint16)
+        cols = int(np.sqrt(h * golden * len(imgs) / w))
         rows = np.ceil(len(imgs) / cols).astype(np.uint16)
 
     grid = Image.new('RGB', size=(cols * w, rows * h))
