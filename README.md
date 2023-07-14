@@ -85,8 +85,6 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
 
 *Note: X server is required for 3D visualization.*
 
----
-
 ### ScanNet data processing (for single-view reconstruction)
 1. Apply and download [ScanNet](http://www.scan-net.org/) into `datasets/ScanNet/scans`. Since we need 2D data, the `*.sens` should also be downloaded for each scene.
 2. Extract `*.sens` files to obtain RGB/semantics/instance/camera pose frame data by
@@ -127,6 +125,10 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
 |:---------------------------------------------------------------:|:---------------------------------------------------------------:|:----------------------------------------------------------------:|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | <img src="resources/visualization/scannet/rgb.jpg" width="300"> | <img src="resources/visualization/scannet/sem.jpg" width="300"> | <img src="resources/visualization/scannet/inst.jpg" width="300"> | <img src="resources/visualization/scannet/3dboxesproj.jpg" width="300"> | <img src="resources/visualization/scannet/3dboxes.png" width="300"> |
 
+---
+
+## Training
+### Scene Generation
 
 
    

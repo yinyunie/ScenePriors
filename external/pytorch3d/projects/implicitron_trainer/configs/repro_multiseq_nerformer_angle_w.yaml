@@ -1,0 +1,6 @@
+defaults:
+- repro_multiseq_nerformer.yaml
+- _self_
+generic_model_args:
+  view_pooler_args:
+    feature_aggregator_class_type: AngleWeightedIdentityFeatureAggregator
