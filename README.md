@@ -83,7 +83,7 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
 |:---------------------------------------------------------------:|:---------------------------------------------------------------------------------:|:----------------------------------------------------------------:|:------------------------------------------------------------------------:|:----------------------------------------------------------------------:|
 | <img src="resources/visualization/front3d/rgb.jpg" width="300"> |          <img src="resources/visualization/front3d/sem.jpg" width="300">          | <img src="resources/visualization/front3d/inst.jpg" width="300"> | <img src="resources/visualization/front3d/3dboxesproj.jpg" width="300">  | <img src="resources/visualization/front3d/CAD_models.png" width="300"> |
 
-*Note: X server is required for 3D visualization.*
+*Note: X server is required for visualization.*
 
 ### ScanNet data processing (for single-view reconstruction)
 1. Apply and download [ScanNet](http://www.scan-net.org/) into `datasets/ScanNet/scans`. Since we need 2D data, the `*.sens` should also be downloaded for each scene.
@@ -124,6 +124,8 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
 |               <div style="width:200px">RGB</div>                |            <div style="width:200px">Semantics</div>             |             <div style="width:200px">Instances</div>             |            <div style="width:200px">3D Box Projections</div>            |          <div style="width:200px">3D Boxes (view #3)</div>          |
 |:---------------------------------------------------------------:|:---------------------------------------------------------------:|:----------------------------------------------------------------:|:-----------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | <img src="resources/visualization/scannet/rgb.jpg" width="300"> | <img src="resources/visualization/scannet/sem.jpg" width="300"> | <img src="resources/visualization/scannet/inst.jpg" width="300"> | <img src="resources/visualization/scannet/3dboxesproj.jpg" width="300"> | <img src="resources/visualization/scannet/3dboxes.png" width="300"> |
+
+*Note: X server is required for visualization.*
 
 ---
 
