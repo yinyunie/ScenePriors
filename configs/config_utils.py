@@ -11,6 +11,7 @@ class CONFIG(object):
     def __init__(self, config):
         self.config = config
         self.is_master = is_master_proc(config.distributed.num_gpus)
+        aug_num = 4 if config.data.aug else 1
         if config.data.dataset == '3D-Front':
             from utils.threed_front import Threed_Front_Config
             dataset_config = Threed_Front_Config(dataset_name=config.data.dataset,
@@ -28,7 +29,7 @@ class CONFIG(object):
             for mode in split_data:
                 for scene_name in split_data[mode]:
                     if mode == 'train':
-                        for aug_idx in range(1):
+                        for aug_idx in range(aug_num):
                             split_data_aug[mode]['%s_aug_%d' % (scene_name, aug_idx)] = split_data[mode][scene_name]
                     else:
                         split_data_aug[mode]['%s_aug_%d' % (scene_name, 0)] = split_data[mode][scene_name]
@@ -57,7 +58,7 @@ class CONFIG(object):
             for mode in split_data:
                 for scene_name in split_data[mode]:
                     if mode == 'train':
-                        for aug_idx in range(4):
+                        for aug_idx in range(aug_num):
                             split_data_aug[mode]['%s_aug_%d' % (scene_name, aug_idx)] = split_data[mode][scene_name]
                     else:
                         split_data_aug[mode]['%s_aug_%d' % (scene_name, 0)] = split_data[mode][scene_name]

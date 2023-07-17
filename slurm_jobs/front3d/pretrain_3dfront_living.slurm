@@ -1,15 +1,15 @@
 #!/bin/sh
-#SBATCH --job-name=demo_scannet    # Job name
+#SBATCH --job-name=pretrain_3dfront_livingroom    # Job name
 #SBATCH --output=./slurm_jobs/job_%j.log           # Standard output and error log
 #SBATCH --mail-type=FAIL          # Mail events (NONE, BEGIN, END, FAIL, ALL)
-#SBATCH --mem=60gb                     # Job memory request
+#SBATCH --mem=300gb                     # Job memory request
 #SBATCH --constraint=rtx_3090|rtx_2080                     # GPU types
-#SBATCH --gpus=1                     # Job GPUs request
+#SBATCH --gpus=4                     # Job GPUs request
 ##SBATCH --nodelist=seti
 ##SBATCH --exclude=lothlann             # Exclude nodes
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=32
 ##SBATCH --mail-user=yinyu.nie@tum.de
-#SBATCH --qos=deadline
+#SBATCH --qos=normal
 #SBATCH --partition=submit
 
 # Default output information
@@ -34,19 +34,21 @@ unset __conda_setup
 
 conda activate sceneprior
 python main.py \
-    mode=demo \
-    start_deform=True \
-    finetune=True \
-    data.n_views=1 \
-    data.dataset=ScanNet \
-    data.split_type=all \
-    weight=outputs/ScanNet/train/2022-09-19/16-03-50/model_best.pth \
-    optimizer.method=RMSprop \
-    optimizer.lr=0.01 \
-    scheduler.latent_input.milestones=[600] \
-    scheduler.latent_input.gamma=0.1 \
-    demo.epochs=1000 \
-    demo.batch_id=5 \
-    demo.batch_num=6 \
-    log.print_step=100 \
-    log.if_wandb=False \
+    start_deform=False \
+    resume=False \
+    finetune=False \
+    weight=[] \
+    distributed.num_gpus=4 \
+    data.dataset=3D-Front \
+    data.split_dir=splits\
+    data.split_type=living \
+    data.n_views=40 \
+    data.aug=True \
+    device.num_workers=32 \
+    train.batch_size=32 \
+    train.epochs=2000 \
+    train.freeze=[] \
+    scheduler.latent_input.milestones=[1000] \
+    scheduler.generator.milestones=[1000] \
+    log.if_wandb=True \
+    exp_name=pretrain_3dfront_livingroom

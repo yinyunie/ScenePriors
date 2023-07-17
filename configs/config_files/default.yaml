@@ -18,6 +18,7 @@ distributed:
   OMP_NUM_THREADS: 12
 data:
   dataset: 3D-Front
+  aug: True
   split_dir: splits
   split_type: bed # bedroom
   n_modes: 100

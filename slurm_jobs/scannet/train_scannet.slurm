@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --job-name=shape_scannet_improved_wo_room_type_w_aug_scene_split_w_scene_mask    # Job name
+#SBATCH --job-name=train_scannet    # Job name
 #SBATCH --output=./slurm_jobs/job_%j.log           # Standard output and error log
 #SBATCH --mail-type=FAIL          # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mem=300gb                     # Job memory request
@@ -32,7 +32,7 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-conda activate ss
+conda activate sceneprior
 python main.py \
     start_deform=True \
     resume=False \
@@ -43,6 +43,7 @@ python main.py \
     data.split_type=all \
     data.n_views=40 \
     data.downsample_ratio=4 \
+    data.aug=True \
     device.num_workers=8 \
     train.batch_size=8 \
     train.epochs=500 \
@@ -50,4 +51,4 @@ python main.py \
     scheduler.latent_input.milestones=[300] \
     scheduler.generator.milestones=[300] \
     log.if_wandb=True \
-    exp_name=shape_scannet_improved_wo_room_type_w_aug_scene_split_w_scene_mask
+    exp_name=train_scannet

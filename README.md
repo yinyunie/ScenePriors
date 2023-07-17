@@ -130,8 +130,103 @@ Our codebase is developed under Ubuntu 20.04 with PyTorch 1.12.1.
 ---
 
 ## Training
-### Scene Generation
+*Note: we use SLURM to manage multi-GPU training. For backend setting, please check [slurm_jobs](slurm_jobs).*
 
+### Scene Generation (with 3D-Front)
+Here we use bedroom data as an example. Training on living rooms is the same.
 
-   
+1. Start layout pretraining by
+   ```commandline
+   python main.py \
+       start_deform=False \
+       resume=False \
+       finetune=False \
+       weight=[] \
+       distributed.num_gpus=4 \
+       data.dataset=3D-Front \
+       data.split_type=bed \
+       data.n_views=20 \
+       data.aug=False \
+       device.num_workers=32 \
+       train.batch_size=128 \
+       train.epochs=800 \
+       train.freeze=[] \
+       scheduler.latent_input.milestones=[400] \
+       scheduler.generator.milestones=[400] \
+       log.if_wandb=True \
+       exp_name=pretrain_3dfront_bedroom
+   ```
+   The network weight will be saved in `outputs/3D-Front/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth`. 
+2. Shape training - We start shape training after the layout training converged. Please replace the `weight` keyword below with the pretrained weight path.
+   ```commandline
+   python main.py \
+       start_deform=True \
+       resume=False \
+       finetune=True \
+       weight=['outputs/3D-Front/train/YEAR-MONTH-DAY/HOUR-MINITE-SECOND/model_best.pth'] \
+       distributed.num_gpus=4 \
+       data.dataset=3D-Front \
+       data.n_views=20 \
+       data.aug=False \
+       data.downsample_ratio=4 \
+       device.num_workers=16 \
+       train.batch_size=16 \
+       train.epochs=500 \
+       train.freeze=[] \
+       scheduler.latent_input.milestones=[300] \
+       scheduler.generator.milestones=[300] \
+       log.if_wandb=True \
+       exp_name=train_3dfront_bedroom
+   ```
+   Still, the refined network weight will be saved in `outputs/3D-Front/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth`.
+
+### Single-view Reconstruction (with ScanNet)
+1. Start layout pretraining by
+   ```commandline
+   python main.py \
+       start_deform=False \
+       resume=False \
+       finetune=False \
+       weight=[] \
+       distributed.num_gpus=4 \
+       data.dataset=ScanNet \
+       data.split_type=all \
+       data.n_views=40 \
+       data.aug=True \
+       device.num_workers=32 \
+       train.batch_size=64 \
+       train.epochs=500 \
+       train.freeze=[] \
+       scheduler.latent_input.milestones=[500] \
+       scheduler.generator.milestones=[500] \
+       log.if_wandb=True \
+       exp_name=pretrain_scannet
+   ```
+   The network weight will be saved in `outputs/ScanNet/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth`.
+
+2. Shape training - We start shape training after the layout training converged. Please replace the weight keyword below with the pretrained weight path.
+```commandline
+   python main.py \
+       start_deform=True \
+       resume=False \
+       finetune=True \
+       weight=['outputs/ScanNet/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth'] \
+       distributed.num_gpus=4 \
+       data.dataset=ScanNet \
+       data.split_type=all \
+       data.n_views=40 \
+       data.downsample_ratio=4 \
+       data.aug=True \
+       device.num_workers=8 \
+       train.batch_size=8 \
+       train.epochs=500 \
+       train.freeze=[] \
+       scheduler.latent_input.milestones=[300] \
+       scheduler.generator.milestones=[300] \
+       log.if_wandb=True \
+       exp_name=train_scannet
+   ```
+   Still, the refined network weight will be saved in `outputs/ScanNet/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth`.
+
+## Generation
    
