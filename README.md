@@ -228,5 +228,97 @@ Here we use bedroom data as an example. Training on living rooms is the same.
    ```
    Still, the refined network weight will be saved in `outputs/ScanNet/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth`.
 
-## Generation
+---
+
+## Generation & Reconstruction
+1. Scene Generation (with 3D-Front)
+   ```commandline
+   python main.py \
+      mode=generation \
+      start_deform=True \
+      data.dataset=3D-Front \
+      finetune=True \
+      weight=outputs/ScanNet/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth \
+      generation.room_type=bed \
+      data.split_dir=splits \
+      data.split_type=bed \
+      generation.phase=generation
+   ```
+   The generated scenes will be saved in `outputs/3D-Front/generation/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND`.
+
+2. Single view reconstruction (with ScanNet). Since this process involves test-time optimization, it would be very slow. Here we test in parallel by dividing the whole test set into `batch_num` batches. You should run this script multiple times to finish the whole testing, where for each script, you should set an individual `batch_id` number, `batch_id=0,1,...,batch_num-1`. If you not want to run in parallel, you can keep the default setting as below.
+   ```commandline
+   python main.py \
+       mode=demo \
+       start_deform=True \
+       finetune=True \
+       data.n_views=1 \
+       data.dataset=ScanNet \
+       data.split_type=all \
+       weight=outputs/ScanNet/train/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/model_best.pth \
+       optimizer.method=RMSprop \
+       optimizer.lr=0.01 \
+       scheduler.latent_input.milestones=[1200] \
+       scheduler.latent_input.gamma=0.1 \
+       demo.epochs=2000 \
+       demo.batch_id=0 \
+       demo.batch_num=1 \
+       log.print_step=100 \
+       log.if_wandb=False \
+   ```
+   The results will be saved in `outputs/ScanNet/demo/output`.
+
+3. Similarly, you can do single view reconstruction with 3D-Front as well.
+   ```commandline
+   python main.py \
+       mode=demo \
+       start_deform=True \
+       finetune=True \
+       data.n_views=1 \
+       data.dataset=3D-Front \
+       data.split_type=bed \
+       weight=outputs/3D-Front/train/2022-09-06/02-37-24/model_best.pth \
+       optimizer.method=RMSprop \
+       optimizer.lr=0.01 \
+       scheduler.latent_input.milestones=[1200] \
+       scheduler.latent_input.gamma=0.1 \
+       demo.epochs=2000
+       demo.batch_id=0 \
+       demo.batch_num=1 \
+       log.print_step=100 \
+       log.if_wandb=False
+   ```
+   The results will be saved in `outputs/3D-Front/demo/output`.
    
+---
+
+## Visualization
+*Note: you may need X-server to showcase the visualization windows from [VTK](https://vtk.org/).*
+1. Scene Generation (with 3D-Front).
+   ```commandline
+   python utils/threed_front/vis/render_pred.py --pred_file outputs/3D-Front/generation/YEAR-MONTH-DAY/HOUR-MINUTE-SECOND/vis/bed/sample_X_X.npz [--use_retrieval]
+   ```
+   
+2. Single-view Reconstruction (with ScanNet)
+   ```commandline
+   python utils/scannet/vis/vis_prediction_scannet.py --dump_dir demo/ScanNet/output --sample_name all_sceneXXXX_XX_XXXX 
+   ```
+   
+3. Single-view Reconstruction (with 3D-Front)
+   ```commandline
+   python utils/threed_front/vis/vis_svr.py --dump_dir demo/3D-Front/output --sample_name [FILENAME IN dump_dir]
+   ```
+
+---
+## Citation
+If you find our work is helpful, please cite
+```
+@InProceedings{Nie_2023_CVPR,
+    author    = {Nie, Yinyu and Dai, Angela and Han, Xiaoguang and Nie{\ss}ner, Matthias},
+    title     = {Learning 3D Scene Priors With 2D Supervision},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2023},
+    pages     = {792-802}
+}
+```

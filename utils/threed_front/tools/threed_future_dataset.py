@@ -10,6 +10,7 @@ import numpy as np
 import pickle
 import os
 import trimesh
+from pathlib import Path
 import torch
 from pytorch3d.loss import chamfer_distance
 
@@ -47,13 +48,15 @@ class ThreedFutureDataset(object):
         all_key_vertices = []
         valid_objects = []
         for i, oi in enumerate(objects):
-            vertice_path = os.path.join('./temp/3D_Future_vertices', oi.model_jid + '.npy')
-            if os.path.exists(vertice_path):
-                key_vertices = np.load(vertice_path)
+            vertice_path = Path(os.path.join('./temp/3D_Future_vertices', oi.model_jid + '.npy'))
+            if vertice_path.exists():
+                key_vertices = np.load(str(vertice_path))
             else:
                 try:
+                    if not vertice_path.parent.exists():
+                        vertice_path.parent.mkdir(parents=True)
                     key_vertices = trimesh.load(oi.raw_model_path, force='mesh').sample(5000)
-                    np.save(vertice_path, key_vertices)
+                    np.save(str(vertice_path), key_vertices)
                 except:
                     print('Failed to load %s.' % (str(oi.raw_model_path)))
                     continue

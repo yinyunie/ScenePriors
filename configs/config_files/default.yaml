@@ -102,12 +102,12 @@ generation:
   dump_dir: ${log.log_dir}/vis
 demo:
   input_dir: ${root_dir}/demo/${data.dataset}/input
-  output_dir: ${root_dir}/demo/${data.dataset}/output_new
+  output_dir: ${root_dir}/demo/${data.dataset}/output
   epochs: 1000
   batch_size: 1
   mask_flag: 200
-  batch_id: 1
-  batch_num: 6
+  batch_id: 0
+  batch_num: 1
   phase: 'full'
 eval:
   use_nms: False
