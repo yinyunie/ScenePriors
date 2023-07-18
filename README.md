@@ -231,6 +231,7 @@ Here we use bedroom data as an example. Training on living rooms is the same.
 ---
 
 ## Generation & Reconstruction
+Please replace the keyword `weight` below with your trained weight path.
 1. Scene Generation (with 3D-Front)
    ```commandline
    python main.py \
