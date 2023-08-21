@@ -153,9 +153,10 @@ cython_debug/
 
 #####Ours
 out
-datasets
+datasets/3D-Front/3D-FRONT*
+datasets/3D-Front/3D-FUTURE*
 outputs
 wandb
 temp
-external
 demo
+datasets/3D-Front/unique_inst_mark.json
